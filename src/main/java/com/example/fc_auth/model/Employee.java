@@ -1,14 +1,15 @@
 package com.example.fc_auth.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +20,8 @@ public class Employee {
     private String lastName;
 
     private Long departmentId;
+
+    private String kakaoNickName;
 
     @ManyToMany
     @JoinTable(

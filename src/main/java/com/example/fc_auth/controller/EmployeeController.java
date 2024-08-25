@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,5 +24,13 @@ public class EmployeeController {
     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Employee>> listAll(){
         return new ResponseEntity<>(employeeService.listEmployees(), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/employees", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Employee> create(@RequestParam String firstName,
+                                           @RequestParam String lastName,
+                                           @RequestParam Long departmentId){
+        Employee newEmployee = employeeService.createEmployee(firstName, lastName, departmentId);
+        return new ResponseEntity<>(newEmployee, HttpStatus.CREATED);
     }
 }

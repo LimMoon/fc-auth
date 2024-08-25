@@ -1,5 +1,8 @@
 package com.example.fc_auth.controller;
 
+import com.example.fc_auth.model.KakaoUserInfoRespDto;
+import com.example.fc_auth.service.KakaoService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -13,11 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class KakaoLoginController {
+    private final KakaoService kakaoService;
 
     @GetMapping("/kakao/callback")
     public ResponseEntity callback(@RequestParam("code")String code){
-        log.info("code " + code);
+        String token = kakaoService.getAccessTokenFromKakao(code);
+        KakaoUserInfoRespDto dto = kakaoService.getUserFromKakao(token);
+        log.info("nickname  " + dto.getKakaoAccount().getProfile().getNickName());
         return new ResponseEntity(HttpStatus.OK);
     }
 }

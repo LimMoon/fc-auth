@@ -1,7 +1,9 @@
 package com.example.fc_auth.controller;
 
 import com.example.fc_auth.model.KakaoUserInfoRespDto;
+import com.example.fc_auth.repository.EmployeeRepository;
 import com.example.fc_auth.service.KakaoService;
+import com.example.fc_auth.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,13 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class KakaoLoginController {
-    private final KakaoService kakaoService;
+    private final LoginService loginService;
 
     @GetMapping("/kakao/callback")
     public ResponseEntity callback(@RequestParam("code")String code){
-        String token = kakaoService.getAccessTokenFromKakao(code);
-        KakaoUserInfoRespDto dto = kakaoService.getUserFromKakao(token);
-        log.info("nickname  " + dto.getKakaoAccount().getProfile().getNickName());
-        return new ResponseEntity(HttpStatus.OK);
+        return loginService.login(code);
     }
 }

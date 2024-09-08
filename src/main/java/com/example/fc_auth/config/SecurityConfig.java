@@ -20,6 +20,7 @@ public class SecurityConfig {
     private final KakaoService kakaoService;
     private final EmployeeRepository employeeRepository;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     private static final String[] AUTH_ALLOWLIST = {
             "/swagger-ui/**", "/v3/**", "/login/**", "/images/**", "/kakao/**"
@@ -36,9 +37,13 @@ public class SecurityConfig {
         http.addFilterBefore(new JwtAuthFilter(kakaoService, employeeRepository), UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(AUTH_ALLOWLIST).permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/employees/**").hasRole("USER")
+                .requestMatchers("/departments/**").hasRole("USER")
                 .anyRequest().authenticated());
 
-        http.exceptionHandling((handling) -> handling.authenticationEntryPoint(authenticationEntryPoint));
+        http.exceptionHandling((handling) -> handling.authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler));
 
         return http.build();
     }

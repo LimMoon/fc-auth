@@ -23,11 +23,16 @@ public class Employee {
 
     private String kakaoNickName;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "employee_role_mapping",
             joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"),
             inverseJoinColumns =  @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Set<Role> roles;
+
+    public static boolean isHR(Employee employee){
+        Set<Role> roles = employee.getRoles();
+        return roles.stream().anyMatch(r -> r.getName().equals("인사팀"));
+    }
 }

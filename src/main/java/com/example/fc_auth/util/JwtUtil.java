@@ -1,5 +1,7 @@
 package com.example.fc_auth.util;
 
+import com.example.fc_auth.model.App;
+import com.example.fc_auth.model.AppRole;
 import com.example.fc_auth.model.Employee;
 import com.example.fc_auth.model.EmployeeRole;
 import io.jsonwebtoken.Claims;
@@ -17,7 +19,24 @@ public class JwtUtil {
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private static final long expirationTimeInMills = 1000 * 60 * 60; // 1hr
 
-    public static String createToken(Employee employee){
+    public static String createAppToken(App app){
+        Date now = new Date();
+        Date expireAt = new Date(now.getTime() + expirationTimeInMills);
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "app");
+
+        claims.put("roles", app.getAppRoles().stream().map(AppRole::getApi).collect(Collectors.toSet()));
+        return Jwts.builder()
+                .setSubject(String.valueOf(app.getId()))
+                .claims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expireAt)
+                .signWith(SECRET_KEY)
+                .compact();
+    }
+
+    public static String createUserToken(Employee employee){
 
         Date now = new Date();
         Date expireAt = new Date(now.getTime() + expirationTimeInMills);
@@ -30,7 +49,6 @@ public class JwtUtil {
         }else{
             claims.put("roles", Collections.emptySet());
         }
-
 
         return Jwts.builder()
                 .setSubject(String.valueOf(employee.getId()))

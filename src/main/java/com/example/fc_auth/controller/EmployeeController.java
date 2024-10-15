@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +21,12 @@ public class EmployeeController {
     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Employee>> listAll(){
         return new ResponseEntity<>(employeeService.listEmployees(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/employees/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Employee> findById(@PathVariable Long id){
+        return new ResponseEntity<>(employeeService.findEmployeeById(id), HttpStatus.OK);
     }
 
     @PostMapping(value = "/admin/employees", produces = MediaType.APPLICATION_JSON_VALUE)
